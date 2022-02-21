@@ -1,0 +1,33 @@
+---
+version: "2"
+services:
+  wikijs:
+    image: requarks/wiki
+    container_name: wikijs
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /portainer/Files/AppData/Config/Wikijs/Config:/data
+    ports:
+      - ${PORT}:443
+    restart: unless-stopped
+    depends_on:
+      - wikijs_db
+  wikijs_db:
+    image: postgres:11-alpine
+    container_name: wikijs_db
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - DB_PASS=${DB_PASS}
+      - TZ=${TZ}
+      - DB_NAME=wiki
+      - DB_USER=wikijs
+      - DB_HOST=db
+      - DB_TYPE=postgres
+      - DB_PORT=${DB_PORT}
+    volumes:
+      - /portainer/Files/AppData/Config/Nextcloud/DB:/config
+    restart: unless-stopped
